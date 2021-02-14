@@ -173,6 +173,8 @@ def clear_cart():
 		return
 
 def checkout_cart(excepted_total):
+	if excepted_total == 0:
+		return
 	driver.get('https://skinbaron.de')
 	time.sleep(2)
 
@@ -214,13 +216,14 @@ simple_searches = [
 ]
 # [[link, max_price]]
 advanced_searches = [
-	['https://skinbaron.de/?appId=730&pub=0.25&sort=BE&qf=4&language=de', 0.4, 20]
+	['https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.4, 20]
 ]
 # [[link, factor, pages_to_search_through]
 
 def main():
-	total = 0
 	clear_cart()
+	total = 0
+
 	for search in simple_searches:
 		link = search[0]
 		max_price = search[1]
@@ -252,7 +255,10 @@ def main():
 				cart_button2.click()
 				total += price2
 
-	
+	checkout_cart(total)
+	clear_cart()
+	total = 0
+
 	for search in advanced_searches:
 		link = search[0]
 		factor = search[1]
@@ -281,11 +287,8 @@ def main():
 					except:
 						print('- Error -')
 	
-	if total != 0:
-		checkout_cart(total)
-
-
-	time.sleep(50)
+	checkout_cart(total)
+	# time.sleep(50)
 
 while True:
 	main()
