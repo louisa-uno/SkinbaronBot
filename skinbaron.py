@@ -266,52 +266,72 @@ searches = [
 # [['simple', link, max_price]]
 # [['advanced', link, factor, pages_to_search_through]
 
-def main():
+def buy_simple_search(search):
+	bought_item = False
+	link = search[1]
+	max_price = search[2]
+	if max_price != None:
+		link = link + '&pub=' + f'{max_price}'
+	driver.get(link)
+	time.sleep(3)
+	items = get_simple_items()
+	for item in items:
+		name = item[0]
+		stock = item[1]
+		price1 = item[2]
+		price2 = item[3]
+		cart_button1 = item[4]
+		cart_button2 = item[5]
+
+		if price1 <= max_price:
+			buy_item(cart_button1, name, price1)
+			bought_item = True
+		elif (price2 != None and price2 <= max_price):
+			buy_item(cart_button2, name, price2)
+			bought_item = True
+	return bought_item
+
+def buy_advanced_item(search):
+	bought_item = False
+	basic_link = search[1]
+	factor = search[2]
+	pages = search[3]
+	for page in range(pages):
+		link = f'{basic_link}&page={page}'
+		driver.get(link)
+		time.sleep(2)
+		items = get_advanced_items()
+		for item in items:
+			name = item[0]
+			price = item[1]
+			cart_button = item[2]
+			wear = item[3]
+
+			max_float = calculate_f(price*100)
+			if wear <= (max_float*factor):
+				buy_item(cart_button, name, price)
+				bought_item = True
+	return bought_item
+
+def main(buy_loop = False):
 	clear_cart()
 	for search in searches:
 		search_type = search[0]
 		if search_type == 'simple':
-			link = search[1]
-			max_price = search[2]
-			if max_price != None:
-				link = link + '&pub=' + f'{max_price}'
-			driver.get(link)
-			time.sleep(3)
-			items = get_simple_items()
-			for item in items:
-				name = item[0]
-				stock = item[1]
-				price1 = item[2]
-				price2 = item[3]
-				cart_button1 = item[4]
-				cart_button2 = item[5]
-
-				if price1 <= max_price:
-					buy_item(cart_button1, name, price1)
-				if (price2 != None and price2 <= max_price):
-					buy_item(cart_button2, name, price2)
+			while True:
+				if buy_simple_search(search) == False:
+					break
+				driver.get('https://www.myexternalip.com/raw')
+				time.sleep(3)
 
 		elif search_type == 'advanced':
-			basic_link = search[1]
-			factor = search[2]
-			pages = search[3]
-			for page in range(pages):
-				link = f'{basic_link}&page={page}'
-				driver.get(link)
-				time.sleep(2)
-				items = get_advanced_items()
-				for item in items:
-					name = item[0]
-					price = item[1]
-					cart_button = item[2]
-					wear = item[3]
+			while True:
+				if buy_advanced_item(search) == False:
+					break
+				driver.get('https://www.myexternalip.com/raw')
+				time.sleep(3)
+	driver.get('https://www.myexternalip.com/raw')
 
-					max_float = calculate_f(price*100)
-					if wear <= (max_float*factor):
-						buy_item(cart_button, name, price)
-			
-
-	# time.sleep(50)
 
 x = 0
 while True:
