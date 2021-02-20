@@ -18,8 +18,8 @@ def start_driver():
 	# options.headless = True
 	# options._binary_location = r'C:\Users\l2o0u\AppData\Local\Programs\Opera\73.0.3856.344\opera.exe'
 
-	# driver = webdriver.Opera(executable_path=r'operadriver.exe',options=options)
-	driver = webdriver.Opera(executable_path=r'chromedriver.exe',options=options)
+	driver = webdriver.Opera(executable_path=r'operadriver.exe',options=options)
+	# driver = webdriver.Opera(executable_path=r'chromedriver.exe',options=options)
 
 
 	# driver = webdriver.Remote(command_executor='http://192.168.178.55:5656/wd/hub',desired_capabilities=DesiredCapabilities.CHROME)
@@ -201,9 +201,11 @@ def clear_cart():
 			rm_button.click()#
 			time.sleep(0.2)
 	except:
-		return
+		total = 0
+		return total
 
 def checkout_cart(excepted_total):
+	excepted_total = round(excepted_total,2)
 	driver.find_element_by_xpath('//*[@id="open-cart-button"]').click()
 	time.sleep(0.5)
 
@@ -211,8 +213,10 @@ def checkout_cart(excepted_total):
 		cart_total = driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[3]/div/div[1]/div[2]').text
 		cart_total = float(cart_total.replace(' €','').replace(',','.'))
 		if cart_total != excepted_total:
-			clear_cart()
-			return 0
+			print('Total of checkout is not matching')
+			print('Saved total: ',excepted_total,'€')
+			print('Real total: ',cart_total,'€')
+			return clear_cart()
 
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[3]/div/div[2]/button').click()
 		time.sleep(1)
@@ -232,42 +236,66 @@ def checkout_cart(excepted_total):
 		# Closing the full-screen element
 		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-trade-success-modal/div[3]/button').click()
 		time.sleep(0.2)
+		print('Checked out successfully')
 		return 0
-	except:
+	except Exception as e:
 		print('Failed to check out')
-		clear_cart()
-		return 0
+		print(e)
+		return clear_cart()
 
 def calculate_f(p):
 	f = -0.083*pow(p,3) + 2.75*pow(p,2) - 30.667*p + 118
 	return f
 
-def buy_item(cart_button, name, price):
+# def buy_item(cart_button, name, price):
+# 	try:
+# 		action.move_to_element(cart_button).perform()
+# 		action.reset_actions()
+# 		time.sleep(0.2)
+# 		cart_button.click()
+# 		print('Checking out ',name,'...')
+# 		checkout_cart(price)
+# 		print('Checked out',name)
+# 	except Exception as e:
+# 		print(e)
+# 		print('Failed buy ',name)
+
+def add_item_to_cart(cart_button, name, price, total):
 	try:
 		action.move_to_element(cart_button).perform()
 		action.reset_actions()
 		time.sleep(0.2)
 		cart_button.click()
-		print('Checking out ',name,'...')
-		checkout_cart(price)
-		print('Checked out',name)
+		print('Added ',name,' to cart')
+		total += price
 	except Exception as e:
 		print(e)
 		print('Failed to add ',name,' to cart')
+	return total
 
 
 searches = [
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2832&sort=CF&language=de', 0.05],
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3076&sort=BP&language=de', 1.00],
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2904&sort=CF&language=de', 2.50],
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2833&sort=CF&language=de', 1.20],
-	['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20]
+	# Accessories:
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2832&sort=CF&language=de', 0.05], # Stickers
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2833&sort=CF&language=de', 1.20], # Music kits
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2904&sort=CF&language=de', 2.50], # Collectible
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3076&sort=BP&language=de', 1.00], # Nametag
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3084&sort=CF&language=de', 1.50], # Present
+	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3355&sort=CF&language=de', 0.30], # Tool
+	# Agents:
+	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3350&sort=CF&language=de', 0.17], # Superior Agents
+	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3351&sort=CF&language=de', 0.70], # Master Agents
+	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3352&sort=CF&language=de', 0.15], # Distinguished Agents
+	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3353&sort=CF&language=de', 0.20], # Exceptional Agents
+	# Weapons:
+	['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # Industrial grade
 ]
 # [['simple', link, max_price]]
 # [['advanced', link, factor, pages_to_search_through]
 
 def buy_simple_search(search):
-	bought_item = False
+	checkout = False
+	total = 0
 	link = search[1]
 	max_price = search[2]
 	if max_price != None:
@@ -284,15 +312,21 @@ def buy_simple_search(search):
 		cart_button2 = item[5]
 
 		if price1 <= max_price:
-			buy_item(cart_button1, name, price1)
-			bought_item = True
+			total = add_item_to_cart(cart_button1, name, price1, total)
+			
+			# buy_item(cart_button1, name, price1)
+			checkout = True
 		elif (price2 != None and price2 <= max_price):
-			buy_item(cart_button2, name, price2)
-			bought_item = True
-	return bought_item
+			total = add_item_to_cart(cart_button1, name, price1, total)
+			# buy_item(cart_button2, name, price2)
+			checkout = True
+	if checkout == True:
+		total = checkout_cart(total)
+	return checkout
 
 def buy_advanced_item(search):
-	bought_item = False
+	checkout = False
+	total = 0
 	basic_link = search[1]
 	factor = search[2]
 	pages = search[3]
@@ -309,9 +343,12 @@ def buy_advanced_item(search):
 
 			max_float = calculate_f(price*100)
 			if wear <= (max_float*factor):
-				buy_item(cart_button, name, price)
-				bought_item = True
-	return bought_item
+				total = add_item_to_cart(cart_button, name, price, total)
+				# buy_item(cart_button, name, price)
+				checkout = True
+		if checkout == True:
+			total = checkout_cart(total)
+	return checkout
 
 def main(buy_loop = False):
 	clear_cart()
