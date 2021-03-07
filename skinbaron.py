@@ -10,7 +10,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def start_driver():
 	options = webdriver.ChromeOptions()
-	# options.add_argument("--start-maximized")
+	options.add_argument("--start-maximized")
 
 	# opera_profile = r"C:\Users\l2o0u\AppData\Roaming\Opera Software\Opera Stable"
 	# options.add_argument('user-data-dir=' + opera_profile)
@@ -289,6 +289,7 @@ searches = [
 	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3353&sort=CF&language=de', 0.20], # Exceptional Agents
 	# Weapons:
 	['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # Industrial grade
+	# ['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # ADD BETTER GRADE!!!!!
 ]
 # [['simple', link, max_price]]
 # [['advanced', link, factor, pages_to_search_through]
