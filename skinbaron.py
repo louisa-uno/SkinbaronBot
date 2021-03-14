@@ -5,38 +5,17 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
 										NoSuchElementException,
 										StaleElementReferenceException)
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def start_driver():
 	options = webdriver.ChromeOptions()
 	options.add_argument("--start-maximized")
 
-	# opera_profile = r"C:\Users\l2o0u\AppData\Roaming\Opera Software\Opera Stable"
-	# options.add_argument('user-data-dir=' + opera_profile)
-
-	# options.headless = True
-	# options._binary_location = r'C:\Users\l2o0u\AppData\Local\Programs\Opera\73.0.3856.344\opera.exe'
-
 	driver = webdriver.Opera(executable_path=r'operadriver.exe',options=options)
-	# driver = webdriver.Opera(executable_path=r'chromedriver.exe',options=options)
-
-
-	# driver = webdriver.Remote(command_executor='http://192.168.178.55:5656/wd/hub',desired_capabilities=DesiredCapabilities.CHROME)
-
-
 
 	# create action chain object 
 	action = ActionChains(driver)
 	
 	return driver, action
-
-def check_exists_by_xpath(xpath, driver):
-	try:
-		driver.find_element_by_xpath(xpath)
-	except NoSuchElementException:
-		return False
-	return True
 
 def check_exists_by_xpath(xpath):
 	try:
@@ -193,8 +172,8 @@ print('Logged in')
 
 def clear_cart():
 	driver.get('https://skinbaron.de')
-	time.sleep(2)
-	driver.find_element_by_xpath('//*[@id="open-cart-button"]').click()
+	time.sleep(4)
+	click_if_exists_by_xpath('//*[@id="open-cart-button"]')
 	try:
 		while True:
 			rm_button = driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[1]/div[1]/div[3]')
@@ -206,7 +185,7 @@ def clear_cart():
 
 def checkout_cart(excepted_total):
 	excepted_total = round(excepted_total,2)
-	driver.find_element_by_xpath('//*[@id="open-cart-button"]').click()
+	driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div').click()
 	time.sleep(0.5)
 
 	try:
@@ -306,7 +285,7 @@ def buy_simple_search(search):
 	items = get_simple_items()
 	for item in items:
 		name = item[0]
-		stock = item[1]
+		# stock = item[1]
 		price1 = item[2]
 		price2 = item[3]
 		cart_button1 = item[4]
@@ -318,7 +297,7 @@ def buy_simple_search(search):
 			# buy_item(cart_button1, name, price1)
 			checkout = True
 		elif (price2 != None and price2 <= max_price):
-			total = add_item_to_cart(cart_button1, name, price1, total)
+			total = add_item_to_cart(cart_button2, name, price2, total)
 			# buy_item(cart_button2, name, price2)
 			checkout = True
 	if checkout == True:
@@ -373,7 +352,11 @@ def main(buy_loop = False):
 
 x = 0
 while True:
-	print(f'{x}: Searching for offers...')
-	main()
-	x += 1
+	try:
+		print(f'{x}: Searching for offers...')
+		main()
+		x += 1
+	except Exception as e:
+		print(' -ERROR- ')
+		print(e)
 # bot_stop()
