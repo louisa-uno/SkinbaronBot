@@ -97,7 +97,6 @@ def get_advanced_items():
 
 	for item in items:
 		return_item = []
-		
 		name = item.find_element_by_xpath('.//div[2]/div[1]').text
 		return_item.append(name)
 
