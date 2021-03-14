@@ -140,9 +140,6 @@ def get_all_items():
 
 	return return_items
 
-def bot_stop():
-	driver.close()
-
 # Starting the chromedriver
 print('Starting driver...')
 driver, action = start_driver()
@@ -162,7 +159,7 @@ try:
 	cookies = pickle.load(open("cookies.pkl", "rb"))
 	for cookie in cookies:
 		driver.add_cookie(cookie)
-except:
+except Exception as e:
 	login()
 
 driver.get("https://skinbaron.de/")
@@ -226,19 +223,6 @@ def calculate_f(p):
 	f = -0.083*pow(p,3) + 2.75*pow(p,2) - 30.667*p + 118
 	return f
 
-# def buy_item(cart_button, name, price):
-# 	try:
-# 		action.move_to_element(cart_button).perform()
-# 		action.reset_actions()
-# 		time.sleep(0.2)
-# 		cart_button.click()
-# 		print('Checking out ',name,'...')
-# 		checkout_cart(price)
-# 		print('Checked out',name)
-# 	except Exception as e:
-# 		print(e)
-# 		print('Failed buy ',name)
-
 def add_item_to_cart(cart_button, name, price, total):
 	try:
 		action.move_to_element(cart_button).perform()
@@ -293,12 +277,9 @@ def buy_simple_search(search):
 
 		if price1 <= max_price:
 			total = add_item_to_cart(cart_button1, name, price1, total)
-			
-			# buy_item(cart_button1, name, price1)
 			checkout = True
 		elif (price2 != None and price2 <= max_price):
 			total = add_item_to_cart(cart_button2, name, price2, total)
-			# buy_item(cart_button2, name, price2)
 			checkout = True
 	if checkout == True:
 		total = checkout_cart(total)
@@ -359,4 +340,3 @@ while True:
 	except Exception as e:
 		print(' -ERROR- ')
 		print(e)
-# bot_stop()
