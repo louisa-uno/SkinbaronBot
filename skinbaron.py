@@ -154,7 +154,7 @@ try:
 	cookies = pickle.load(open("cookies.pkl", "rb"))
 	for cookie in cookies:
 		driver.add_cookie(cookie)
-except Exception as e:
+except Exception:
 	login()
 
 driver.get("https://skinbaron.de/")
@@ -171,7 +171,7 @@ def clear_cart():
 			rm_button = driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[1]/div[1]/div[3]')
 			rm_button.click()#
 			time.sleep(0.2)
-	except:
+	except Exception:
 		total = 0
 		return total
 
