@@ -191,19 +191,15 @@ def checkout_cart(excepted_total):
 
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[3]/div/div[2]/button').click()
 		time.sleep(1)
-		
-		# Choose guthaben as payment method
+		# Choose balance as payment method
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div[1]/div[2]/ul/li[1]/div').click()
 		time.sleep(1)
-
 		# Clicking Pay Now
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div[2]/div/div[2]/div/button[2]').click()
 		time.sleep(1)
-
 		# Clicking Store in Inventory
 		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-buy-cart-trade-locked-modal/div[3]/div/button').click()
 		time.sleep(2)
-
 		# Closing the full-screen element
 		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-trade-success-modal/div[3]/button').click()
 		time.sleep(0.2)
