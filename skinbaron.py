@@ -9,7 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 def start_driver():
 	options = webdriver.ChromeOptions()
 	options.add_argument("--start-maximized")
-	driver = webdriver.Opera(executable_path=r'operadriver.exe',options=options)
+	driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
 	action = ActionChains(driver)
 	return driver, action
 
