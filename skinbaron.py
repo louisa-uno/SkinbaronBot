@@ -9,6 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 def start_driver():
 	options = webdriver.ChromeOptions()
 	options.add_argument("--start-maximized")
+	options.add_experimental_option('w3c', False)
 	driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
 	action = ActionChains(driver)
 	return driver, action
@@ -26,7 +27,7 @@ def click_if_exists_by_xpath(xpath):
 
 # Accepts Cookies
 def accept_cookies():
-	click_if_exists_by_xpath('/html/body/div[2]/div[3]/div/div/div[2]/div/button[2]')
+	click_if_exists_by_xpath('/html/body/div[3]/div[3]/div/div/div[2]/div/button[2]')
 
 # Close the welcome popup
 def close_welcome_popup():
@@ -35,7 +36,7 @@ def close_welcome_popup():
 # Logging in with the loaded Steam Cookies
 def login():
 	# Clicking on the Steam Redirect
-	driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[1]/div').click()
+	driver.get('https://skinbaron.com/steam-login')
 	time.sleep(1)
 	# Clicking on the Sign In button in Steam and redirecting to Skinbaron
 	driver.find_element_by_xpath('//*[@id="imageLogin"]').click()
@@ -54,31 +55,31 @@ def get_price(price):
 	price = price.split('\n')
 	price.reverse()
 	price = price[0]
-	price = price.replace(' €','')
+	price = price.replace(' €','').replace(',','.')
 	price = float(price)
 	return price
 
-def get_stock(item):
-	stock = item.find_element_by_xpath('.//div[2]/div[4]/div[3]/p').text
-	stock = stock[:-10]
-	stock = int(stock)
-	return stock
+# def get_stock(item):
+# 	stock = item.find_element_by_xpath('.//div[2]/div[4]/div[3]/p').text
+# 	stock = stock[:-10]
+# 	stock = int(stock)
+# 	return stock
 
 def get_simple_items():
 	return_items = []
-	items = driver.find_elements_by_xpath('//*/sb-stackable-offer/div')
+	items = driver.find_elements_by_xpath('//*[@id="offer-container"]/ul/li/sb-single-offer')
 	for item in items:
 		return_item = []
 		return_item.append(item.find_element_by_xpath('.//div[2]/div[2]/div[1]').text)
 
-		return_item.append(get_stock(item))
+		return_item.append(1)#get_stock(item))
 
-		prices = item.find_elements_by_xpath('.//div[2]/div[4]/div/div')
+		prices = item.find_elements_by_xpath('.//div[2]/div[6]')
 		return_item.append(get_price(prices[0]))
 		prices.reverse()
 		return_item.append(get_price(prices[0]))
 
-		cart_buttons = item.find_elements_by_xpath('.//div[2]/div[4]/div[2]/sb-buy-button/div/div/div/button')
+		cart_buttons = item.find_elements_by_xpath('.//div[2]/div[7]/sb-buy-button/div/div/button')
 		return_item.append(cart_buttons[0])
 		cart_buttons.reverse()
 		return_item.append(cart_buttons[0])
@@ -147,6 +148,7 @@ time.sleep(3)
 
 print('Closing popups...')
 close_welcome_popup()
+time.sleep(3)
 accept_cookies()
 
 print('Logging in...')
@@ -165,11 +167,10 @@ print('Logged in')
 def clear_cart():
 	driver.get('https://skinbaron.de')
 	time.sleep(4)
-	click_if_exists_by_xpath('//*[@id="open-cart-button"]')
+	click_if_exists_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[1]')
 	try:
 		while True:
-			rm_button = driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[1]/div[1]/div[3]')
-			rm_button.click()#
+			rm_button = driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[1]/div[1]/div[3]').click()
 			time.sleep(0.2)
 	except Exception:
 		total = 0
@@ -177,11 +178,11 @@ def clear_cart():
 
 def checkout_cart(excepted_total):
 	excepted_total = round(excepted_total,2)
-	driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div').click()
+	driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[1]').click()
 	time.sleep(0.5)
 
 	try:
-		cart_total = driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[3]/div/div[1]/div[2]').text
+		cart_total = driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[1]/div[2]').text
 		cart_total = float(cart_total.replace(' €','').replace(',','.'))
 		if cart_total != excepted_total:
 			print('Total of checkout is not matching')
@@ -189,23 +190,24 @@ def checkout_cart(excepted_total):
 			print('Real total: ',cart_total,'€')
 			return clear_cart()
 
-		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div/div/div[3]/div/div[2]/button').click()
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[2]/button[2]').click()
 		time.sleep(1)
 		# Choose balance as payment method
-		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div[1]/div[2]/ul/li[1]/div').click()
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/ul/li[1]').click()
+		time.sleep(1)
+		# Accept the Widerrufsrecht checkbox
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/label').click()
 		time.sleep(1)
 		# Clicking Pay Now
-		driver.find_element_by_xpath('//*[@id="cart-container"]/div/div/div/div[2]/div/div[2]/div/button[2]').click()
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[2]/div/div[2]/div/button[2]').click()
 		time.sleep(1)
 		# Clicking Store in Inventory
-		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-buy-cart-trade-locked-modal/div[3]/div/button').click()
+		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-select-buy-location-modal/div[3]/div/button').click()
 		time.sleep(2)
-		# Closing the full-screen element
-		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-trade-success-modal/div[3]/button').click()
-		time.sleep(0.2)
 		print('Checked out successfully')
 		return 0
 	except Exception as e:
+		
 		print('Failed to check out')
 		print(e)
 		return clear_cart()
@@ -216,10 +218,12 @@ def calculate_f(p):
 
 def add_item_to_cart(cart_button, name, price, total):
 	try:
-		action.move_to_element(cart_button).perform()
+		action.move_to_element_with_offset(cart_button, 0, 0)
+		action.perform()
 		action.reset_actions()
 		time.sleep(0.2)
 		cart_button.click()
+		click_if_exists_by_xpath('/html/body/div[5]/div/div') # Click on the notification to remove it
 		print('Added ',name,' to cart')
 		total += price
 	except Exception as e:
@@ -230,20 +234,20 @@ def add_item_to_cart(cart_button, name, price, total):
 
 searches = [
 	# Accessories:
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2832&sort=CF&language=de', 0.05], # Stickers
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2833&sort=CF&language=de', 1.20], # Music kits
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2904&sort=CF&language=de', 2.50], # Collectible
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3076&sort=BP&language=de', 1.00], # Nametag
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3084&sort=CF&language=de', 1.50], # Present
-	['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3355&sort=CF&language=de', 0.30], # Tool
+	# ['simple', 'https://skinbaron.de/de/csgo/Accessory/Sticker?sort=CF', 0.02], # Stickers
+	['simple', 'https://skinbaron.de/de/csgo/Accessory/Music-Kit?sort=BP', 1.50], # Music kits
+	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2904&sort=CF&language=de', 2.50], # Collectible
+	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3076&sort=BP&language=de', 1.00], # Nametag
+	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3084&sort=CF&language=de', 1.50], # Present
+	['simple', 'https://skinbaron.de/de/csgo/Accessory?v=3355&sort=BP', 0.40], # Tool
 	# Agents:
-	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3350&sort=CF&language=de', 0.17], # Superior Agents
-	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3351&sort=CF&language=de', 0.70], # Master Agents
-	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3352&sort=CF&language=de', 0.15], # Distinguished Agents
-	['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3353&sort=CF&language=de', 0.20], # Exceptional Agents
+	['simple', 'https://skinbaron.de/de/csgo/Agents?sort=CF', 0.35], # All Agents
+	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3350&sort=CF&language=de', 0.17], # Superior Agents
+	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3351&sort=CF&language=de', 0.70], # Master Agents
+	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3352&sort=CF&language=de', 0.15], # Distinguished Agents
+	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3353&sort=CF&language=de', 0.20], # Exceptional Agents
 	# Weapons:
-	['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # Industrial grade
-	# ['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # ADD BETTER GRADE!!!!!
+	# ['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # Industrial grade
 ]
 # [['simple', link, max_price]]
 # [['advanced', link, factor, pages_to_search_through]
@@ -324,10 +328,10 @@ def main(buy_loop = False):
 
 x = 0
 while True:
-	try:
-		print(f'{x}: Searching for offers...')
-		main()
-		x += 1
-	except Exception as e:
-		print(' -ERROR- ')
-		print(e)
+	# try:
+	print(f'{x}: Searching for offers...')
+	main()
+	x += 1
+	# except Exception as e:
+		# print(' -ERROR- ')
+		# print(e)
