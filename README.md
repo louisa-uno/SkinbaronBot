@@ -12,9 +12,6 @@
 #### The "searches" are preconfigured so that it will buy things by itself after you logged yourself in if you aren't changing the searches
 #### The preconfiguration is made to buy cheap items
 
-### Docker Installation
-#### After running it once locally via Python3.8 so that it stores your cookie file build it with the Dockerfile 
-
 ### Contributing
 #### Pull requests are welcome. For major changes, please open an issue upfront to discuss what you would like to change.
 
