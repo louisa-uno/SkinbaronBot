@@ -76,14 +76,14 @@ def get_price(price):
 
 def get_simple_items():
 	return_items = []
-	items = driver.find_elements_by_xpath('//*[@id="offer-container"]/ul/li/sb-single-offer')
+	items = driver.find_elements_by_xpath('//*[@id="offer-container"]/ul/li/sb-stackable-offer') + driver.find_elements_by_xpath('//*[@id="offer-container"]/ul/li/sb-single-offer')
 	for item in items:
 		return_item = []
 		return_item.append(item.find_element_by_xpath('.//div[2]/div[2]/div[1]').text)
 
 		return_item.append(1)#get_stock(item))
 
-		prices = item.find_elements_by_xpath('.//div[2]/div[6]')
+		prices = item.find_elements_by_xpath('.//div/div[2]/div[4]/div[2]/sb-buy-button/div/div/div/button')
 		return_item.append(get_price(prices[0]))
 		prices.reverse()
 		return_item.append(get_price(prices[0]))
