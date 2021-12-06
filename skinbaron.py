@@ -5,12 +5,21 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
 										NoSuchElementException,
 										StaleElementReferenceException)
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 def start_driver():
-	options = webdriver.ChromeOptions()
-	options.add_argument("--start-maximized")
-	options.add_experimental_option('w3c', False)
-	driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
+	useOpera = False
+	if useOpera:
+		# Uses opera installation
+		options = webdriver.ChromeOptions()
+		options.add_argument("--start-maximized")
+		options.add_experimental_option('w3c', False)
+		driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
+	else:
+		# Uses a Chrome node connected to this selenium grid
+		selenium_grid_url = "192.168.178.98:4444"
+		capabilities = DesiredCapabilities.CHROME.copy()
+		driver = webdriver.Remote(desired_capabilities=capabilities,command_executor=selenium_grid_url)
 	action = ActionChains(driver)
 	return driver, action
 
