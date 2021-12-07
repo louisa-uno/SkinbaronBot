@@ -32,7 +32,7 @@ def check_exists_by_xpath(xpath):
 
 def click_if_exists_by_xpath(xpath):
 	if check_exists_by_xpath(xpath) == True:
-		driver.find_element_by_xpath(xpath).click()
+ 		driver.find_element_by_xpath(xpath).click()
 
 # Accepts Cookies
 def accept_cookies():
@@ -83,7 +83,7 @@ def get_simple_items():
 
 		return_item.append(1)#get_stock(item))
 
-		prices = item.find_elements_by_xpath('.//div/div[2]/div[4]/div[2]/sb-buy-button/div/div/div/button')
+		prices = item.find_elements_by_xpath('.//div/div[2]/div[4]/div[1]/div') +item.find_elements_by_xpath('.//div[2]/div[2]/div[6]')
 		return_item.append(get_price(prices[0]))
 		prices.reverse()
 		return_item.append(get_price(prices[0]))
