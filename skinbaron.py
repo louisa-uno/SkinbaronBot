@@ -146,21 +146,21 @@ def get_all_items():
 	return return_items
 
 # Starting the chromedriver
-print('Starting driver...')
+print('Starting driver.')
 driver, action = start_driver()
 print('Started driver')
 
 # Loads the website
-print('Loading Skinbaron...')
+print('Loading Skinbaron.')
 driver.get("https://skinbaron.de/")
 time.sleep(3)
 
-print('Closing popups...')
+print('Closing popups.')
 close_welcome_popup()
 time.sleep(3)
 accept_cookies()
 
-print('Logging in...')
+print('Logging in.')
 try:
 	cookies = pickle.load(open("cookies.pkl", "rb"))
 	for cookie in cookies:
@@ -338,7 +338,7 @@ def main(buy_loop = False):
 x = 0
 while True:
 	# try:
-	print(f'{x}: Searching for offers...')
+	print(f'{x}: Searching for offers.')
 	main()
 	x += 1
 	# except Exception as e:
