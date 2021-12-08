@@ -83,12 +83,12 @@ def get_simple_items():
 
 		return_item.append(1)#get_stock(item))
 
-		prices = item.find_elements_by_xpath('.//div/div[2]/div[4]/div[1]/div') +item.find_elements_by_xpath('.//div[2]/div[2]/div[6]')
+		prices = item.find_elements_by_xpath('.//div/div[2]/div[4]/div[1]/div') + item.find_elements_by_xpath('.//div[2]/div[2]/div[6]')
 		return_item.append(get_price(prices[0]))
 		prices.reverse()
 		return_item.append(get_price(prices[0]))
 
-		cart_buttons = item.find_elements_by_xpath('.//div[2]/div[7]/sb-buy-button/div/div/button')
+		cart_buttons = item.find_elements_by_xpath('.//div[2]/div[7]/sb-buy-button/div/div/button') + item.find_elements_by_xpath('.//div/div[2]/div[4]/div[2]/sb-buy-button/div/div/div/button')
 		return_item.append(cart_buttons[0])
 		cart_buttons.reverse()
 		return_item.append(cart_buttons[0])
@@ -216,7 +216,7 @@ def checkout_cart(excepted_total):
 		print('Checked out successfully')
 		return 0
 	except Exception as e:
-		
+			
 		print('Failed to check out')
 		print(e)
 		return clear_cart()
