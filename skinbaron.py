@@ -245,8 +245,8 @@ def checkout_cart(excepted_total):
         cart_total = float(cart_total.replace(' €', '').replace(',', '.'))
         if cart_total != excepted_total:
             log.info('Total of checkout is not matching')
-            log.info('Saved total: ', excepted_total, '€')
-            log.info('Real total: ', cart_total, '€')
+            log.info('Saved total: ' + excepted_total + '€')
+            log.info('Real total: ' + cart_total + '€')
             return clear_cart()
 
         driver.find_element(
@@ -301,11 +301,11 @@ def add_item_to_cart(cart_button, name, price, total):
         cart_button.click()
         click_if_exists_by_xpath('/html/body/div[5]/div/div'
                                  )  # Click on the notification to remove it
-        log.info('Added ', name, ' to cart')
+        log.info('Added ' + name + ' to cart')
         total += price
     except Exception as e:
         log.error(e)
-        log.error('Failed to add ', name, ' to cart')
+        log.error('Failed to add ' + name + ' to cart')
     return total
 
 
@@ -389,7 +389,7 @@ def main(buy_loop=False):
 x = 0
 while True:
     try:
-        log.info(f'{x}: Searching for offers.')
+        log.info(x + ': Searching for offers.')
         main()
         x += 1
     except Exception as e:
