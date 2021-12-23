@@ -9,6 +9,7 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         StaleElementReferenceException)
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.by import By
 
 log.basicConfig(level=log.INFO)
 
@@ -33,7 +34,7 @@ def start_driver():
 
 def check_exists_by_xpath(xpath):
     try:
-        driver.find_element_by_xpath(xpath)
+        driver.find_element(By.XPATH, xpath)
     except NoSuchElementException:
         return False
     return True
@@ -41,7 +42,7 @@ def check_exists_by_xpath(xpath):
 
 def click_if_exists_by_xpath(xpath):
     if check_exists_by_xpath(xpath) == True:
-        driver.find_element_by_xpath(xpath).click()
+        driver.find_element(By.XPATH, xpath).click()
 
 
 # Accepts Cookies
@@ -63,7 +64,7 @@ def login():
     driver.get('https://skinbaron.com/steam-login')
     time.sleep(1)
     # Clicking on the Sign In button in Steam and redirecting to Skinbaron
-    driver.find_element_by_xpath('//*[@id="imageLogin"]').click()
+    driver.find_element(By.XPATH, '//*[@id="imageLogin"]').click()
     time.sleep(2)
     # Waiting until returning logged in to skinbaron
     if check_exists_by_xpath(
@@ -98,8 +99,8 @@ def get_simple_items():
     for item in items:
         return_item = []
         return_item.append(
-            item.find_element_by_xpath(
-                './/div[contains(@class, "product-name")]').text)
+            item.find_element(By.XPATH,
+                              './/div[contains(@class, "product-name")]').text)
 
         return_item.append(1)  #get_stock(item))
 
@@ -137,17 +138,17 @@ def get_advanced_items():
 
     for item in items:
         return_item = []
-        name = item.find_element_by_xpath('.//div[2]/div[1]').text
+        name = item.find_element(By.XPATH, './/div[2]/div[1]').text
         return_item.append(name)
 
-        price = item.find_element_by_xpath('.//div[6]')
+        price = item.find_element(By.XPATH, './/div[6]')
         return_item.append(get_price(price))
 
-        cart_button = item.find_element_by_xpath(
-            './/div[7]/sb-buy-button/div/div/button')
+        cart_button = item.find_element(
+            By.XPATH, './/div[7]/sb-buy-button/div/div/button')
         return_item.append(cart_button)
 
-        wear = item.find_element_by_xpath('.//div[8]/p[2]').text
+        wear = item.find_element(By.XPATH, './/div[8]/p[2]').text
         wear = float(wear.replace('WEAR ', '').replace('%', ''))
         return_item.append(wear)
 
@@ -167,7 +168,8 @@ def get_all_items():
                 f'//*[@id="offer-container"]/div/sb-one-sided-pagination/ul/li[{x}]/button'
         ) == True:
             try:
-                driver.find_element_by_xpath(
+                driver.find_element(
+                    By.XPATH,
                     f'//*[@id="offer-container"]/div/sb-one-sided-pagination/ul/li[{x}]/button'
                 ).click()
             except StaleElementReferenceException:
@@ -220,7 +222,8 @@ def clear_cart():
     )
     try:
         while True:
-            rm_button = driver.find_element_by_xpath(
+            rm_button = driver.find_element(
+                By.XPATH,
                 '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[1]/div[1]/div[3]'
             ).click()
             time.sleep(0.2)
@@ -231,13 +234,15 @@ def clear_cart():
 
 def checkout_cart(excepted_total):
     excepted_total = round(excepted_total, 2)
-    driver.find_element_by_xpath(
+    driver.find_element(
+        By.XPATH,
         '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[1]'
     ).click()
     time.sleep(0.5)
 
     try:
-        cart_total = driver.find_element_by_xpath(
+        cart_total = driver.find_element(
+            By.XPATH,
             '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div[3]/div/div[1]/div[2]'
         ).text
         cart_total = float(cart_total.replace(' €', '').replace(',', '.'))
@@ -247,27 +252,32 @@ def checkout_cart(excepted_total):
             log.info('Real total: ', cart_total, '€')
             return clear_cart()
 
-        driver.find_element_by_xpath(
+        driver.find_element(
+            By.XPATH,
             '//*[@id="cart-container"]/div[2]/div/div/sb-cart-step-review/div/div[3]/div/div[2]/button[2]'
         ).click()
         time.sleep(1)
         # Choose balance as payment method
-        driver.find_element_by_xpath(
+        driver.find_element(
+            By.XPATH,
             '//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/ul/li[1]/div'
         ).click()
         time.sleep(1)
         # Accept the Widerrufsrecht checkbox
-        driver.find_element_by_xpath(
+        driver.find_element(
+            By.XPATH,
             '//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/label'
         ).click()
         time.sleep(1)
         # Clicking Pay Now
-        driver.find_element_by_xpath(
+        driver.find_element(
+            By.XPATH,
             '//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[2]/div/div[2]/div/button[2]'
         ).click()
         time.sleep(1)
         # Clicking Store in Inventory
-        driver.find_element_by_xpath(
+        driver.find_element(
+            By.XPATH,
             '/html/body/modal-container/div/div/sb-select-buy-location-modal/div[3]/div/button'
         ).click()
         time.sleep(2)
