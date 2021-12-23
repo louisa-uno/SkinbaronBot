@@ -27,10 +27,3 @@ jobs:
        context: .
        push: true
        tags: ghcr.io/luois45/skinbaron-bot:develop
-    - name: Update Hub Description
-      uses: peter-evans/dockerhub-description@v2
-      with:
-        username: ${{ secrets.GIT_USERNAME }}
-        password: ${{ secrets.GIT_TOKEN }}
-        repository: ghcr.io/luois45/skinbaron-bot
-        readme-filepath: ./DockerHub-README.md
