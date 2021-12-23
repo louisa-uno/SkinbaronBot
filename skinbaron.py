@@ -25,8 +25,7 @@ def start_driver():
         seleniumGridUrl = config['seleniumGridUrl']
         driver = webdriver.Remote(options=webdriver.FirefoxOptions(),
                                   command_executor=seleniumGridUrl)
-    action = ActionChains(driver)
-    return driver, action
+        return driver
 
 
 def check_exists_by_xpath(xpath):
@@ -185,7 +184,7 @@ def get_all_items():
 
 # Starting the chromedriver
 log.info('Starting driver.')
-driver, action = start_driver()
+driver = start_driver()
 log.info('Started driver')
 
 # Loads the website
@@ -215,9 +214,11 @@ log.info('Logged in')
 def clear_cart():
     driver.get('https://skinbaron.de')
     time.sleep(4)
-    click_if_exists_by_xpath(
-        '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[1]'
-    )
+    ActionChains(driver).move_to_element(
+        driver.find_element(
+            By.XPATH,
+            '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[1]'
+        )).click().perform()
     try:
         while True:
             rm_button = driver.find_element(
@@ -295,6 +296,7 @@ def calculate_f(p):
 
 def add_item_to_cart(cart_button, name, price, total):
     try:
+        action = ActionChains(driver)
         action.move_to_element_with_offset(cart_button, 0, 0)
         action.perform()
         action.reset_actions()
