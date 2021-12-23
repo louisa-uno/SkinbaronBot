@@ -89,10 +89,10 @@ def get_price(price):
 
 def get_simple_items():
     return_items = []
-    items = driver.find_elements_by_xpath(
-        '//*[@id="offer-container"]/ul/li/sb-stackable-offer'
-    ) + driver.find_elements_by_xpath(
-        '//*[@id="offer-container"]/ul/li/sb-single-offer')
+    items = driver.find_elements(
+        By.XPATH, '//*[@id="offer-container"]/ul/li/sb-stackable-offer'
+    ) + driver.find_elements(
+        By.XPATH, '//*[@id="offer-container"]/ul/li/sb-single-offer')
     for item in items:
         return_item = []
         return_item.append(
@@ -101,22 +101,23 @@ def get_simple_items():
 
         return_item.append(1)  #get_stock(item))
 
-        prices = item.find_elements_by_xpath(
-            './/div[contains(@class, "product-price-unlocked")]'
-        ) + item.find_elements_by_xpath(
-            './/div[contains(@class, "product-price-locked")]')
+        prices = item.find_elements(
+            By.XPATH, './/div[contains(@class, "product-price-unlocked")]'
+        ) + item.find_elements(
+            By.XPATH, './/div[contains(@class, "product-price-locked")]')
         if prices == []:
-            prices = item.find_elements_by_xpath(
-                './/div[contains(@class, "product-price")]')
+            prices = item.find_elements(
+                By.XPATH, './/div[contains(@class, "product-price")]')
         prices = prices
         print(get_price(prices[0]))
         return_item.append(get_price(prices[0]))
         prices.reverse()
         return_item.append(get_price(prices[0]))
 
-        cart_buttons = item.find_elements_by_xpath(
-            './/div[2]/div[7]/sb-buy-button/div/div/button'
-        ) + item.find_elements_by_xpath(
+        cart_buttons = item.find_elements(
+            By.XPATH, './/div[2]/div[7]/sb-buy-button/div/div/button'
+        ) + item.find_elements(
+            By.XPATH,
             './/div/div[2]/div[4]/div[2]/sb-buy-button/div/div/div/button')
         return_item.append(cart_buttons[0])
         cart_buttons.reverse()
@@ -131,7 +132,7 @@ def get_simple_items():
 
 def get_advanced_items():
     return_items = []
-    items = driver.find_elements_by_xpath('//*/li/sb-single-offer/div/div[2]')
+    items = driver.find_elements(By.XPATH, '//*/li/sb-single-offer/div/div[2]')
 
     for item in items:
         return_item = []
