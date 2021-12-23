@@ -393,4 +393,5 @@ while True:
         main()
         x += 1
     except Exception as e:
-        log.error('Unexpected error occured:' + e)
+        log.error('Unexpected error occured:')
+        log.error(e)
