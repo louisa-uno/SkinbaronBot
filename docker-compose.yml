@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   reddit-bot:
-    image: skinbaron-bot:latest
+    image: luois45/skinbaron-bot:latest
     deploy:
       replicas: 1
       restart_policy:
