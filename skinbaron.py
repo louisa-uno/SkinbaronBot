@@ -245,8 +245,8 @@ def checkout_cart(excepted_total):
         cart_total = float(cart_total.replace(' €', '').replace(',', '.'))
         if cart_total != excepted_total:
             log.info('Total of checkout is not matching')
-            log.info('Saved total: ' + excepted_total + '€')
-            log.info('Real total: ' + cart_total + '€')
+            log.info('Saved total: ' + str(excepted_total) + '€')
+            log.info('Real total: ' + str(cart_total) + '€')
             return clear_cart()
 
         driver.find_element(
@@ -389,7 +389,7 @@ def main(buy_loop=False):
 x = 0
 while True:
     try:
-        log.info(x + ': Searching for offers.')
+        log.info(str(x) + ': Searching for offers.')
         main()
         x += 1
     except Exception as e:
