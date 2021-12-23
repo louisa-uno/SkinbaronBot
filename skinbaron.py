@@ -1,7 +1,6 @@
 import time
 import json
 import pickle
-import os
 import logging as log
 from selenium import webdriver
 from selenium.common.exceptions import (ElementClickInterceptedException,
