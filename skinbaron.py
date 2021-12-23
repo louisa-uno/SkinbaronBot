@@ -105,13 +105,20 @@ def get_simple_items():
     for item in items:
         return_item = []
         return_item.append(
-            item.find_element_by_xpath('.//div[2]/div[2]/div[1]').text)
+            item.find_element_by_xpath(
+                './/div[contains(@class, "product-name")]').text)
 
         return_item.append(1)  #get_stock(item))
 
         prices = item.find_elements_by_xpath(
-            './/div/div[2]/div[4]/div[1]/div') + item.find_elements_by_xpath(
-                './/div[2]/div[2]/div[6]')
+            './/div[contains(@class, "product-price-unlocked")]'
+        ) + item.find_elements_by_xpath(
+            './/div[contains(@class, "product-price-locked")]')
+        if prices == []:
+            prices = item.find_elements_by_xpath(
+                './/div[contains(@class, "product-price")]')
+        prices = prices
+        print(get_price(prices[0]))
         return_item.append(get_price(prices[0]))
         prices.reverse()
         return_item.append(get_price(prices[0]))
