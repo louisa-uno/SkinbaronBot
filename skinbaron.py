@@ -1,6 +1,8 @@
 import time
 import json
 import pickle
+import os
+import logging as log
 from selenium import webdriver
 from selenium.common.exceptions import (ElementClickInterceptedException,
 										NoSuchElementException,
@@ -8,19 +10,18 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+log.basicConfig(level=log.INFO)
+
 with open('config.json', 'r') as configFile:
 	config = json.load(configFile)
 
 def start_driver():
-	useOpera = False
-	if useOpera:
-		# Uses opera installation
-		options = webdriver.ChromeOptions()
-		options.add_argument("--start-maximized")
-		options.add_experimental_option('w3c', False)
-		driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
+	useLocal = True
+	if useLocal:
+		# Uses local Firefox
+		driver = webdriver.Firefox()
 	else:
-		# Uses a Chrome node connected to this selenium grid
+		# Uses a Firefox node connected to this selenium grid
 		seleniumGridUrl = config['seleniumGridUrl']
 		capabilities = DesiredCapabilities.FIREFOX.copy()
 		driver = webdriver.Remote(desired_capabilities=capabilities,command_executor=seleniumGridUrl)
@@ -56,7 +57,7 @@ def login():
 	time.sleep(2)
 	# Waiting until returning logged in to skinbaron
 	if check_exists_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[1]/sb-profile-widget/a/span/span[2]/strong') == False:
-		print('Requires manual login by user')
+		log.warning('Requires manual login by user')
 		while True:
 			if check_exists_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[1]/sb-profile-widget/a/span/span[2]/strong') == True:
 				time.sleep(0.5)
@@ -150,21 +151,21 @@ def get_all_items():
 	return return_items
 
 # Starting the chromedriver
-print('Starting driver.')
+log.info('Starting driver.')
 driver, action = start_driver()
-print('Started driver')
+log.info('Started driver')
 
 # Loads the website
-print('Loading Skinbaron.')
+log.info('Loading Skinbaron.')
 driver.get("https://skinbaron.de/")
 time.sleep(3)
 
-print('Closing popups.')
+log.info('Closing popups.')
 close_welcome_popup()
 time.sleep(3)
 accept_cookies()
 
-print('Logging in.')
+log.info('Logging in.')
 try:
 	cookies = pickle.load(open("cookies/cookies.pkl", "rb"))
 	for cookie in cookies:
@@ -175,7 +176,7 @@ except Exception:
 driver.get("https://skinbaron.de/")
 time.sleep(2)
 pickle.dump( driver.get_cookies() , open("cookies/cookies.pkl","wb"))
-print('Logged in')
+log.info('Logged in')
 
 def clear_cart():
 	driver.get('https://skinbaron.de')
@@ -198,9 +199,9 @@ def checkout_cart(excepted_total):
 		cart_total = driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[1]/div[2]').text
 		cart_total = float(cart_total.replace(' €','').replace(',','.'))
 		if cart_total != excepted_total:
-			print('Total of checkout is not matching')
-			print('Saved total: ',excepted_total,'€')
-			print('Real total: ',cart_total,'€')
+			log.info('Total of checkout is not matching')
+			log.info('Saved total: ',excepted_total,'€')
+			log.info('Real total: ',cart_total,'€')
 			return clear_cart()
 
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[2]/button[2]').click()
@@ -217,12 +218,12 @@ def checkout_cart(excepted_total):
 		# Clicking Store in Inventory
 		driver.find_element_by_xpath('/html/body/modal-container/div/div/sb-select-buy-location-modal/div[3]/div/button').click()
 		time.sleep(2)
-		print('Checked out successfully')
+		log.info('Checked out successfully')
 		return 0
 	except Exception as e:
 			
-		print('Failed to check out')
-		print(e)
+		log.error('Failed to check out')
+		log.error(e)
 		return clear_cart()
 
 def calculate_f(p):
@@ -237,11 +238,11 @@ def add_item_to_cart(cart_button, name, price, total):
 		time.sleep(0.2)
 		cart_button.click()
 		click_if_exists_by_xpath('/html/body/div[5]/div/div') # Click on the notification to remove it
-		print('Added ',name,' to cart')
+		log.info('Added ',name,' to cart')
 		total += price
 	except Exception as e:
-		print(e)
-		print('Failed to add ',name,' to cart')
+		log.error(e)
+		log.error('Failed to add ',name,' to cart')
 	return total
 
 def buy_simple_search(search):
@@ -322,9 +323,9 @@ def main(buy_loop = False):
 x = 0
 while True:
 	# try:
-	print(f'{x}: Searching for offers.')
+	log.info(f'{x}: Searching for offers.')
 	main()
 	x += 1
 	# except Exception as e:
-		# print(' -ERROR- ')
-		# print(e)
+		# log.error(' -ERROR- ')
+		# log.error(e)

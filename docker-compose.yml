@@ -12,15 +12,9 @@ services:
       - source: config1
         target: /usr/src/app/config.json
     volumes:
-      - type: volume
-        source: volume1
-        target: /usr/src/app/cookies
-        read_only: false
+      # Replace my path with the path to your cookies folder
+      - "/c/Users/Louis/Desktop/code/skinbaron-bot/cookies:/usr/src/app/cookies"
 configs:
   config1:
     external:
       name: skinbaronbot-config
-volumes:
-  volume1:
-    external: true
-    name: skinbaronbot-cookies

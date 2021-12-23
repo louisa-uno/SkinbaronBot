@@ -1,0 +1,19 @@
+{
+    "seleniumGridUrl": "192.168.178.91:4444/wd/hub",
+    "searches": [
+        [
+            "simple",
+            "https://skinbaron.de/de/csgo/Accessory/Music-Kit?sort=BP",
+            1.50
+        ],
+        [
+            "simple",
+            "https://skinbaron.de/de/csgo/Accessory?v=3355&sort=BP",
+            0.40
+        ]
+    ],
+    "steam": {
+        "username": "your_username",
+        "password": "your_password"
+    }
+}
