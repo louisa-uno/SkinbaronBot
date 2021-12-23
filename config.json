@@ -1,0 +1,25 @@
+{
+    "seleniumGridUrl": "192.168.178.91:4444/wd/hub",
+    "searches": [
+        [
+            "simple",
+            "https://skinbaron.de/de/csgo/Accessory/Music-Kit?sort=BP",
+            1.50
+        ],
+        [
+            "simple",
+            "https://skinbaron.de/de/csgo/Accessory?v=3355&sort=BP",
+            0.40
+        ],
+        [
+            "simple",
+            "https://skinbaron.de/de/csgo/Agents?sort=CF",
+            0.35
+        ],
+        [
+            "simple",
+            "https://skinbaron.de/en/csgo/Rifle/AK-47?sort=CF&wf=1&wf=0&wf=2",
+            0.13
+        ]
+    ]
+}

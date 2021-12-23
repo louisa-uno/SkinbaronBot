@@ -1,4 +1,5 @@
 import time
+import json
 import pickle
 from selenium import webdriver
 from selenium.common.exceptions import (ElementClickInterceptedException,
@@ -6,6 +7,9 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
 										StaleElementReferenceException)
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+with open('config.json', 'r') as configFile:
+	config = json.load(configFile)
 
 def start_driver():
 	useOpera = False
@@ -17,9 +21,9 @@ def start_driver():
 		driver = webdriver.Opera(executable_path=r'C:\\operadriver.exe',options=options)
 	else:
 		# Uses a Chrome node connected to this selenium grid
-		selenium_grid_url = "192.168.178.98:4444"
-		capabilities = DesiredCapabilities.CHROME.copy()
-		driver = webdriver.Remote(desired_capabilities=capabilities,command_executor=selenium_grid_url)
+		seleniumGridUrl = config['seleniumGridUrl']
+		capabilities = DesiredCapabilities.FIREFOX.copy()
+		driver = webdriver.Remote(desired_capabilities=capabilities,command_executor=seleniumGridUrl)
 	action = ActionChains(driver)
 	return driver, action
 
@@ -162,7 +166,7 @@ accept_cookies()
 
 print('Logging in.')
 try:
-	cookies = pickle.load(open("cookies.pkl", "rb"))
+	cookies = pickle.load(open("cookies/cookies.pkl", "rb"))
 	for cookie in cookies:
 		driver.add_cookie(cookie)
 except Exception:
@@ -170,7 +174,7 @@ except Exception:
 
 driver.get("https://skinbaron.de/")
 time.sleep(2)
-pickle.dump( driver.get_cookies() , open("cookies.pkl","wb"))
+pickle.dump( driver.get_cookies() , open("cookies/cookies.pkl","wb"))
 print('Logged in')
 
 def clear_cart():
@@ -240,27 +244,6 @@ def add_item_to_cart(cart_button, name, price, total):
 		print('Failed to add ',name,' to cart')
 	return total
 
-
-searches = [
-	# Accessories:
-	# ['simple', 'https://skinbaron.de/de/csgo/Accessory/Sticker?sort=CF', 0.02], # Stickers
-	['simple', 'https://skinbaron.de/de/csgo/Accessory/Music-Kit?sort=BP', 1.50], # Music kits
-	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=2904&sort=CF&language=de', 2.50], # Collectible
-	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3076&sort=BP&language=de', 1.00], # Nametag
-	# ['simple', 'https://skinbaron.de/?appId=730&v=2829&v=3084&sort=CF&language=de', 1.50], # Present
-	['simple', 'https://skinbaron.de/de/csgo/Accessory?v=3355&sort=BP', 0.40], # Tool
-	# Agents:
-	['simple', 'https://skinbaron.de/de/csgo/Agents?sort=CF', 0.35], # All Agents
-	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3350&sort=CF&language=de', 0.17], # Superior Agents
-	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3351&sort=CF&language=de', 0.70], # Master Agents
-	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3352&sort=CF&language=de', 0.15], # Distinguished Agents
-	# ['simple', 'https://skinbaron.de/?appId=730&v=3341&v=3353&sort=CF&language=de', 0.20], # Exceptional Agents
-	# Weapons:
-	# ['advanced', 'https://skinbaron.de/?appId=730&pub=0.13&sort=BE&qf=4&language=de', 0.46, 20] # Industrial grade
-]
-# [['simple', link, max_price]]
-# [['advanced', link, factor, pages_to_search_through]
-
 def buy_simple_search(search):
 	checkout = False
 	total = 0
@@ -316,6 +299,7 @@ def buy_advanced_item(search):
 	return checkout
 
 def main(buy_loop = False):
+	searches = config['searches']
 	clear_cart()
 	for search in searches:
 		search_type = search[0]

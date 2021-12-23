@@ -1,0 +1,26 @@
+version: '3.7'
+services:
+  reddit-bot:
+    image: skinbaron-bot:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 0
+    configs:
+      # Make sure to upload a config before deploying
+      - source: config1
+        target: /usr/src/app/config.json
+    volumes:
+      - type: volume
+        source: volume1
+        target: /usr/src/app/cookies
+        read_only: false
+configs:
+  config1:
+    external:
+      name: skinbaronbot-config
+volumes:
+  volume1:
+    external: true
+    name: skinbaronbot-cookies
