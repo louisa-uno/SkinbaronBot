@@ -89,13 +89,6 @@ def get_price(price):
     return price
 
 
-# def get_stock(item):
-# 	stock = item.find_element_by_xpath('.//div[2]/div[4]/div[3]/p').text
-# 	stock = stock[:-10]
-# 	stock = int(stock)
-# 	return stock
-
-
 def get_simple_items():
     return_items = []
     items = driver.find_elements_by_xpath(
