@@ -221,7 +221,7 @@ def clear_cart():
         )).click().perform()
     try:
         while True:
-            rm_button = driver.find_element(
+            driver.find_element(
                 By.XPATH,
                 '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[1]/div[1]/div[3]'
             ).click()
