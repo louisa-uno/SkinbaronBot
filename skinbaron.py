@@ -196,7 +196,7 @@ def checkout_cart(excepted_total):
 	time.sleep(0.5)
 
 	try:
-		cart_total = driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[1]/div[2]').text
+		cart_total = driver.find_element_by_xpath('/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[3]/sb-shopping-cart-widget/div/div/div[2]/div/div[2]/div/div/sb-cart-step-review/div/div[3]/div/div[1]/div[2]').text
 		cart_total = float(cart_total.replace(' €','').replace(',','.'))
 		if cart_total != excepted_total:
 			log.info('Total of checkout is not matching')
@@ -204,10 +204,10 @@ def checkout_cart(excepted_total):
 			log.info('Real total: ',cart_total,'€')
 			return clear_cart()
 
-		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div/div/sb-cart-step-review/div/div/div[3]/div/div[2]/button[2]').click()
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div/div/sb-cart-step-review/div/div[3]/div/div[2]/button[2]').click()
 		time.sleep(1)
 		# Choose balance as payment method
-		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/ul/li[1]').click()
+		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/ul/li[1]/div').click()
 		time.sleep(1)
 		# Accept the Widerrufsrecht checkbox
 		driver.find_element_by_xpath('//*[@id="cart-container"]/div[2]/div[2]/sb-cart-step-payment-method/div[1]/div[2]/label').click()
