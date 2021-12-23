@@ -16,7 +16,7 @@ with open('config.json', 'r') as configFile:
 	config = json.load(configFile)
 
 def start_driver():
-	useLocal = True
+	useLocal = False
 	if useLocal:
 		# Uses local Firefox
 		driver = webdriver.Firefox()
