@@ -8,7 +8,6 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         NoSuchElementException,
                                         StaleElementReferenceException)
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.by import By
 
 log.basicConfig(level=log.INFO)
@@ -25,8 +24,7 @@ def start_driver():
     else:
         # Uses a Firefox node connected to this selenium grid
         seleniumGridUrl = config['seleniumGridUrl']
-        capabilities = DesiredCapabilities.FIREFOX.copy()
-        driver = webdriver.Remote(desired_capabilities=capabilities,
+        driver = webdriver.Remote(options=webdriver.FirefoxOptions(),
                                   command_executor=seleniumGridUrl)
     action = ActionChains(driver)
     return driver, action
