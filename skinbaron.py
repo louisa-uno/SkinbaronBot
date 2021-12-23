@@ -389,10 +389,6 @@ def main(buy_loop=False):
 
 x = 0
 while True:
-    try:
-        log.info(str(x) + ': Searching for offers.')
-        main()
-        x += 1
-    except Exception as e:
-        log.error('Unexpected error occured:')
-        log.error(e)
+    log.info(str(x) + ': Searching for offers.')
+    main()
+    x += 1
