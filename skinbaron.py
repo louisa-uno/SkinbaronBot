@@ -367,7 +367,7 @@ def buy_advanced_item(search):
     return checkout
 
 
-def main(buy_loop=False):
+def main():
     searches = config['searches']
     clear_cart()
     for search in searches:
