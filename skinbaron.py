@@ -37,7 +37,7 @@ def check_exists_by_xpath(xpath):
 
 
 def click_if_exists_by_xpath(xpath):
-    if check_exists_by_xpath(xpath) == True:
+    if check_exists_by_xpath(xpath) is True:
         driver.find_element(By.XPATH, xpath).click()
 
 
@@ -65,12 +65,12 @@ def login():
     # Waiting until returning logged in to skinbaron
     if check_exists_by_xpath(
             '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[1]/sb-profile-widget/a/span/span[2]/strong'
-    ) == False:
+    ) is False:
         log.warning('Requires manual login by user')
         while True:
             if check_exists_by_xpath(
                     '/html/body/sb-root/div/sb-layout-header/sb-layout-header-default/div/header/nav/ul/li[1]/sb-profile-widget/a/span/span[2]/strong'
-            ) == True:
+            ) is True:
                 time.sleep(0.5)
                 break
             time.sleep(0.1)
@@ -163,7 +163,7 @@ def get_all_items():
 
         if check_exists_by_xpath(
                 f'//*[@id="offer-container"]/div/sb-one-sided-pagination/ul/li[{x}]/button'
-        ) == True:
+        ) is True:
             try:
                 driver.find_element(
                     By.XPATH,
@@ -317,7 +317,7 @@ def buy_simple_search(search):
     total = 0
     link = search[1]
     max_price = search[2]
-    if max_price != None:
+    if max_price is not None:
         link = link + '&pub=' + f'{max_price}'
     driver.get(link)
     time.sleep(3)
@@ -333,10 +333,10 @@ def buy_simple_search(search):
         if price1 <= max_price:
             total = add_item_to_cart(cart_button1, name, price1, total)
             checkout = True
-        elif (price2 != None and price2 <= max_price):
+        elif (price2 is not None and price2 <= max_price):
             total = add_item_to_cart(cart_button2, name, price2, total)
             checkout = True
-    if checkout == True:
+    if checkout is True:
         total = checkout_cart(total)
     return checkout
 
@@ -363,7 +363,7 @@ def buy_advanced_item(search):
                 total = add_item_to_cart(cart_button, name, price, total)
                 # buy_item(cart_button, name, price)
                 checkout = True
-        if checkout == True:
+        if checkout is True:
             total = checkout_cart(total)
     return checkout
 
@@ -375,14 +375,14 @@ def main(buy_loop=False):
         search_type = search[0]
         if search_type == 'simple':
             while True:
-                if buy_simple_search(search) == False:
+                if buy_simple_search(search) is False:
                     break
                 driver.get('https://www.myexternalip.com/raw')
                 time.sleep(3)
 
         elif search_type == 'advanced':
             while True:
-                if buy_advanced_item(search) == False:
+                if buy_advanced_item(search) is False:
                     break
                 driver.get('https://www.myexternalip.com/raw')
                 time.sleep(3)
