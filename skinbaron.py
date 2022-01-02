@@ -107,7 +107,6 @@ def get_simple_items():
         if prices == []:
             prices = item.find_elements(
                 By.XPATH, './/div[contains(@class, "product-price")]')
-        prices = prices
         print(get_price(prices[0]))
         return_item.append(get_price(prices[0]))
         prices.reverse()
