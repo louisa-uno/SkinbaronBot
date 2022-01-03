@@ -98,7 +98,7 @@ def get_simple_items():
             item.find_element(By.XPATH,
                               './/div[contains(@class, "product-name")]').text)
 
-        return_item.append(1)  #get_stock(item))
+        return_item.append(1)
 
         prices = item.find_elements(
             By.XPATH, './/div[contains(@class, "product-price-unlocked")]'
