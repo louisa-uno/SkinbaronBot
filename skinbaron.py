@@ -25,7 +25,7 @@ def start_driver():
         seleniumGridUrl = config['seleniumGridUrl']
         driver = webdriver.Remote(options=webdriver.FirefoxOptions(),
                                   command_executor=seleniumGridUrl)
-        return driver
+    return driver
 
 
 def check_exists_by_xpath(xpath):
