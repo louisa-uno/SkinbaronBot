@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  reddit-bot:
+  bot:
     image: luois45/skinbaron-bot:latest
     deploy:
       replicas: 1
